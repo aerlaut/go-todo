@@ -1,9 +1,13 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/aerlaut/go-todo/todo"
+)
 
 func Test_Help_ShouldPrintAvailableCommand(t *testing.T) {
-	todos := make([]Todo, 0)
+	todos := make([]todo.Todo, 0)
 
 	executeCommand(HELP, "", &todos)
 
@@ -14,7 +18,7 @@ func Test_Help_ShouldPrintAvailableCommand(t *testing.T) {
 }
 
 func Test_Add_ShouldAddTodo(t *testing.T) {
-	todos := make([]Todo, 0)
+	todos := make([]todo.Todo, 0)
 
 	// Add first todo
 	executeCommand(ADD, "test todo 1", &todos)
@@ -31,7 +35,7 @@ func Test_Add_ShouldAddTodo(t *testing.T) {
 }
 
 func Test_List_ShouldListTodos(t *testing.T) {
-	todos := []Todo{
+	todos := []todo.Todo{
 		{Text: "test todo 1"},
 		{Text: "test todo 2"},
 	}
@@ -45,7 +49,7 @@ func Test_List_ShouldListTodos(t *testing.T) {
 }
 
 func Test_Delete_ShouldDeleteTodo(t *testing.T) {
-	todos := []Todo{
+	todos := []todo.Todo{
 		{Text: "test todo 1"},
 		{Text: "test todo 2"},
 	}

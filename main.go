@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/aerlaut/go-todo/todo"
 )
 
 // Command names
@@ -18,7 +20,7 @@ const (
 	EXIT   string = "exit"
 )
 
-func executeCommand(command string, argument string, todos *[]Todo) {
+func executeCommand(command string, argument string, todos *[]todo.Todo) {
 
 	switch command {
 	// Print available commands
@@ -50,7 +52,7 @@ func executeCommand(command string, argument string, todos *[]Todo) {
 			return
 		}
 
-		newTodoList := make([]Todo, 0)
+		newTodoList := make([]todo.Todo, 0)
 
 		for idx, todo := range *todos {
 			if idx+1 == deleteId {
@@ -66,7 +68,7 @@ func executeCommand(command string, argument string, todos *[]Todo) {
 			return
 		}
 
-		*todos = append(*todos, todoFactory(argument))
+		*todos = append(*todos, todo.TodoFactory(argument))
 		fmt.Println("Todo added")
 
 	default:
@@ -108,13 +110,17 @@ func main() {
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
-	todos := make([]Todo, 0)
+	todos := make([]todo.Todo, 0)
 
 	fmt.Println("Enter command: <help> to show help")
 	for scanner.Scan() {
 
 		input := scanner.Text()
 		command, argument := parseCommand(input)
+
+		if command == EXIT {
+			break
+		}
 
 		executeCommand(command, argument, &todos)
 

@@ -1,10 +1,10 @@
-package main
+package todo
 
 type Todo struct {
 	Text string
 }
 
-func todoFactory(text string) Todo {
+func TodoFactory(text string) Todo {
 	return Todo{
 		Text: text,
 	}
