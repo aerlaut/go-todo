@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -18,7 +19,10 @@ const (
 	DELETE string = "delete"
 	ADD    string = "add"
 	EXIT   string = "exit"
+	SAVE   string = "save"
 )
+
+var filePath string
 
 func executeCommand(command string, argument string, todos *[]todo.Todo) {
 
@@ -71,10 +75,27 @@ func executeCommand(command string, argument string, todos *[]todo.Todo) {
 		*todos = append(*todos, todo.TodoFactory(argument))
 		fmt.Println("Todo added")
 
+	case SAVE:
+		saveTodos(todos, filePath)
+		fmt.Println("File saved!")
+
 	default:
 		fmt.Println("Invalid command")
 	}
 
+}
+
+func saveTodos(todos *[]todo.Todo, filePath string) {
+	file, err := os.Create(filePath)
+	if err != nil {
+		fmt.Println("Error creating file")
+		return
+	}
+
+	content, _ := json.Marshal(todos)
+	fmt.Fprintln(file, string(content))
+
+	defer file.Close()
 }
 
 func printHelp() {
@@ -100,7 +121,7 @@ func parseCommand(input string) (command string, argument string) {
 func main() {
 
 	showHelp := flag.Bool("h", false, "Show help")
-	// saveFile := flag.Bool("f", "todo.todo", "File to use for storing data")
+	filePath = *flag.String("f", "", "File to use for storing data")
 
 	flag.Parse()
 
@@ -119,6 +140,7 @@ func main() {
 		command, argument := parseCommand(input)
 
 		if command == EXIT {
+			saveTodos(&todos, filePath)
 			break
 		}
 
