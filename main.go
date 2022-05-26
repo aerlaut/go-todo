@@ -9,6 +9,14 @@ import (
 	"strings"
 )
 
+const (
+	HELP   string = "help"
+	LIST   string = "list"
+	DELETE string = "delete"
+	ADD    string = "add"
+	EXIT   string = "exit"
+)
+
 func main() {
 
 	showHelp := flag.Bool("h", false, "Show help")
@@ -48,7 +56,7 @@ func main() {
 
 		switch command {
 		// Print available commands
-		case "help":
+		case HELP:
 			fmt.Println("Available commands:")
 			fmt.Println("  help - Show this help")
 			fmt.Println("  add <todo>- Add todo")
@@ -57,14 +65,14 @@ func main() {
 			fmt.Println("  exit - Exit program")
 
 		// List all todos
-		case "list":
+		case LIST:
 			fmt.Println("Todos:")
 			for idx, todo := range todos {
 				fmt.Printf("%d. %s\n", idx+1, todo)
 			}
 
 		// Delete todo by id
-		case "delete":
+		case DELETE:
 			deleteId, err := strconv.Atoi(argument)
 			if err != nil {
 				fmt.Println("Invalid id")
@@ -78,7 +86,7 @@ func main() {
 
 			todos = append(todos[:deleteId-1], todos[deleteId:]...)
 
-		case "add":
+		case ADD:
 			if argument == "" {
 				continue
 			}
