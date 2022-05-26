@@ -18,7 +18,7 @@ const (
 	EXIT   string = "exit"
 )
 
-func ExecuteCommand(command string, argument string, todos *[]string) {
+func executeCommand(command string, argument string, todos *[]string) {
 
 	switch command {
 	// Print available commands
@@ -75,6 +75,26 @@ func ExecuteCommand(command string, argument string, todos *[]string) {
 
 }
 
+func printHelp() {
+	fmt.Println("Usage:")
+	fmt.Println("  go run main.go [options]")
+	fmt.Println("")
+	fmt.Println("Options:")
+	flag.PrintDefaults()
+}
+
+func parseCommand(input string) (command string, argument string) {
+	input = strings.TrimSpace(input)
+	inputs := strings.SplitN(input, " ", 2)
+
+	command = inputs[0]
+	if len(inputs) > 1 {
+		argument = strings.Trim(inputs[1], " ")
+	}
+
+	return command, argument
+}
+
 func main() {
 
 	showHelp := flag.Bool("h", false, "Show help")
@@ -83,11 +103,7 @@ func main() {
 	flag.Parse()
 
 	if *showHelp {
-		fmt.Println("Usage:")
-		fmt.Println("  go run main.go [options]")
-		fmt.Println("")
-		fmt.Println("Options:")
-		flag.PrintDefaults()
+		printHelp()
 		return
 	}
 
@@ -97,22 +113,10 @@ func main() {
 	fmt.Println("Enter command: <help> to show help")
 	for scanner.Scan() {
 
-		var command, argument string
+		input := scanner.Text()
+		command, argument := parseCommand(input)
 
-		command = scanner.Text()
-		inputs := strings.SplitN(command, " ", 2)
-
-		command = inputs[0]
-
-		if len(inputs) > 1 {
-			argument = strings.Trim(inputs[1], " ")
-		}
-
-		if command == "exit" {
-			break
-		}
-
-		ExecuteCommand(command, argument, &todos)
+		executeCommand(command, argument, &todos)
 
 		fmt.Println()
 		fmt.Println("Enter command: <help> to show help")
