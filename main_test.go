@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func Test_Help_ShouldPrintAvailableCommand(t *testing.T) {
-	todos := make([]string, 0)
+	todos := make([]Todo, 0)
 
 	executeCommand(HELP, "", &todos)
 
@@ -14,7 +14,7 @@ func Test_Help_ShouldPrintAvailableCommand(t *testing.T) {
 }
 
 func Test_Add_ShouldAddTodo(t *testing.T) {
-	todos := make([]string, 0)
+	todos := make([]Todo, 0)
 
 	// Add first todo
 	executeCommand(ADD, "test todo 1", &todos)
@@ -31,7 +31,10 @@ func Test_Add_ShouldAddTodo(t *testing.T) {
 }
 
 func Test_List_ShouldListTodos(t *testing.T) {
-	todos := []string{"test todo 1", "test todo 2"}
+	todos := []Todo{
+		{Text: "test todo 1"},
+		{Text: "test todo 2"},
+	}
 
 	// Add first todo
 	executeCommand(LIST, "", &todos)
@@ -42,7 +45,10 @@ func Test_List_ShouldListTodos(t *testing.T) {
 }
 
 func Test_Delete_ShouldDeleteTodo(t *testing.T) {
-	todos := []string{"test todo 1", "test todo 2"}
+	todos := []Todo{
+		{Text: "test todo 1"},
+		{Text: "test todo 2"},
+	}
 
 	// Add first todo
 	executeCommand(DELETE, "2", &todos)
