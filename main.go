@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Command names
 const (
 	HELP   string = "help"
 	LIST   string = "list"
@@ -16,6 +17,63 @@ const (
 	ADD    string = "add"
 	EXIT   string = "exit"
 )
+
+func executeCommand(command string, argument string, todos *[]string) {
+
+	switch command {
+	// Print available commands
+	case HELP:
+		fmt.Println("Available commands:")
+		fmt.Println("  help - Show this help")
+		fmt.Println("  add <todo>- Add todo")
+		fmt.Println("  list - List all todos")
+		fmt.Println("  delete <id> - Delete todo by id")
+		fmt.Println("  exit - Exit program")
+
+	// List all todos
+	case LIST:
+		fmt.Println("Todos:")
+		for idx, todo := range *todos {
+			fmt.Printf("%d. %s\n", idx+1, todo)
+		}
+
+	// Delete todo by id
+	case DELETE:
+		deleteId, err := strconv.Atoi(argument)
+		if err != nil {
+			fmt.Println("Invalid id")
+			return
+		}
+
+		if deleteId > len(*todos) {
+			fmt.Println("Invalid ID")
+			return
+		}
+
+		newTodoList := make([]string, 0)
+
+		for idx, todo := range *todos {
+			if idx+1 == deleteId {
+				continue
+			}
+			newTodoList = append(newTodoList, todo)
+		}
+
+		*todos = newTodoList
+
+	case ADD:
+		if argument == "" {
+			return
+		}
+
+		*todos = append(*todos, argument)
+		fmt.Println("Todo added")
+
+	default:
+		fmt.Println("Invalid command")
+	}
+
+}
 
 func main() {
 
@@ -54,49 +112,7 @@ func main() {
 			break
 		}
 
-		switch command {
-		// Print available commands
-		case HELP:
-			fmt.Println("Available commands:")
-			fmt.Println("  help - Show this help")
-			fmt.Println("  add <todo>- Add todo")
-			fmt.Println("  list - List all todos")
-			fmt.Println("  delete <id> - Delete todo by id")
-			fmt.Println("  exit - Exit program")
-
-		// List all todos
-		case LIST:
-			fmt.Println("Todos:")
-			for idx, todo := range todos {
-				fmt.Printf("%d. %s\n", idx+1, todo)
-			}
-
-		// Delete todo by id
-		case DELETE:
-			deleteId, err := strconv.Atoi(argument)
-			if err != nil {
-				fmt.Println("Invalid id")
-				continue
-			}
-
-			if deleteId > len(todos) {
-				fmt.Println("Invalid ID")
-				continue
-			}
-
-			todos = append(todos[:deleteId-1], todos[deleteId:]...)
-
-		case ADD:
-			if argument == "" {
-				continue
-			}
-
-			todos = append(todos, argument)
-			fmt.Println("Todo added")
-
-		default:
-			fmt.Println("Invalid command")
-		}
+		executeCommand(command, argument, &todos)
 
 		fmt.Println()
 		fmt.Println("Enter command: <help> to show help")
