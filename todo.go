@@ -18,7 +18,7 @@ const (
 	EXIT   string = "exit"
 )
 
-func executeCommand(command string, argument string, todos *[]string) {
+func ExecuteCommand(command string, argument string, todos *[]string) {
 
 	switch command {
 	// Print available commands
@@ -112,7 +112,7 @@ func main() {
 			break
 		}
 
-		executeCommand(command, argument, &todos)
+		ExecuteCommand(command, argument, &todos)
 
 		fmt.Println()
 		fmt.Println("Enter command: <help> to show help")
