@@ -1,2 +1,2 @@
 # Go TODO
-**Simple Todo CLI application, written in GO**
+An over-engineered to-do list to learn Golang!
