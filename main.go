@@ -20,11 +20,12 @@ const (
 	ADD    string = "add"
 	EXIT   string = "exit"
 	SAVE   string = "save"
+	LOAD   string = "load"
 )
 
 var filePath string
 
-func executeCommand(command string, argument string, todos *[]todo.Todo) {
+func executeCommand(command string, argument string, todos *[]todo.Todo, filePath string) {
 
 	switch command {
 	// Print available commands
@@ -33,6 +34,8 @@ func executeCommand(command string, argument string, todos *[]todo.Todo) {
 		fmt.Println("  help - Show this help")
 		fmt.Println("  add <todo>- Add todo")
 		fmt.Println("  list - List all todos")
+		fmt.Println("  save - Save todos")
+		fmt.Println("  load - Load todos")
 		fmt.Println("  delete <id> - Delete todo by id")
 		fmt.Println("  exit - Exit program")
 
@@ -79,6 +82,10 @@ func executeCommand(command string, argument string, todos *[]todo.Todo) {
 		saveTodos(todos, filePath)
 		fmt.Println("File saved!")
 
+	case LOAD:
+		loadTodos(filePath, todos)
+		fmt.Println("Todos loaded!")
+
 	default:
 		fmt.Println("Invalid command")
 	}
@@ -96,6 +103,22 @@ func saveTodos(todos *[]todo.Todo, filePath string) {
 	fmt.Fprintln(file, string(content))
 
 	defer file.Close()
+}
+
+func loadTodos(filePath string, todo *[]todo.Todo) {
+
+	fmt.Println("Loading todos from file:", filePath)
+
+	data, err := os.ReadFile(filePath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = json.Unmarshal(data, &todo)
+	if err != nil {
+		fmt.Println("*** test", err)
+	}
 }
 
 func printHelp() {
@@ -121,7 +144,7 @@ func parseCommand(input string) (command string, argument string) {
 func main() {
 
 	showHelp := flag.Bool("h", false, "Show help")
-	filePath = *flag.String("f", "", "File to use for storing data")
+	filePath := flag.String("f", "", "File to use for storing data")
 
 	flag.Parse()
 
@@ -140,11 +163,11 @@ func main() {
 		command, argument := parseCommand(input)
 
 		if command == EXIT {
-			saveTodos(&todos, filePath)
+			saveTodos(&todos, *filePath)
 			break
 		}
 
-		executeCommand(command, argument, &todos)
+		executeCommand(command, argument, &todos, *filePath)
 
 		fmt.Println()
 		fmt.Println("Enter command: <help> to show help")
